@@ -32,11 +32,11 @@ WORKSPACE="$REPO_ROOT/projects/truthwatcher/workspace.yml"
 [ -n "$TRUTHWATCHER_PATH" ] || { echo "Provide --truthwatcher-path or set TRUTHWATCHER_REPO_PATH." >&2; exit 2; }
 [ -d "$TRUTHWATCHER_PATH/.git" ] || git -C "$TRUTHWATCHER_PATH" rev-parse --git-dir >/dev/null 2>&1 || { echo "Not a Git repository: $TRUTHWATCHER_PATH" >&2; exit 1; }
 
-mkdir -p "$REPO_ROOT/logs" "$REPO_ROOT/reports/runs" "$REPO_ROOT/projects/truthwatcher/1-workbench/extracts" "$REPO_ROOT/.mistspren/state"
+mkdir -p "$REPO_ROOT/logs" "$REPO_ROOT/reports/runs" "$REPO_ROOT/.mistspren/state" "$REPO_ROOT/.mistspren/review"
 STAMP=$(date -u +%Y%m%d-%H%M%S)
 LOG_FILE="$REPO_ROOT/logs/truthwatcher-review-$STAMP.log"
 RUN_REPORT="$REPO_ROOT/reports/runs/truthwatcher-review-$STAMP.md"
-NOTE_FILE="$REPO_ROOT/projects/truthwatcher/1-workbench/extracts/truthwatcher-review-$STAMP.md"
+NOTE_FILE="$REPO_ROOT/.mistspren/review/truthwatcher-review-$STAMP.md"
 STATE_FILE="$REPO_ROOT/.mistspren/state/truthwatcher-last-reviewed"
 
 log() { printf '%s %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$*" | tee -a "$LOG_FILE"; }
@@ -71,7 +71,7 @@ render_note() {
 
 ## Safety Statement
 
-No Truthwatcher code was modified by this Mistspren review script. This report is a human-reviewable Mistspren workbench extract only. It does not accept ADRs, create implementation changes, or open production pull requests.
+No Truthwatcher code was modified by this Mistspren review script. This report is local review output only. It does not accept ADRs, create implementation changes, or open production pull requests. Promote only durable conclusions into named Mistspren memory files.
 
 ## Changed Files
 

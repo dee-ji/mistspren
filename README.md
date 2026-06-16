@@ -238,7 +238,16 @@ When working on Truthwatcher:
 
 ## Scripts and Makefile Usage
 
-The `scripts/` directory contains conservative workflow scaffolds. They create Mistspren notes, run reports, integrity reports, and logs; they do not edit Truthwatcher source code, accept ADRs automatically, open production pull requests, or perform destructive file operations.
+The `scripts/` directory contains conservative workflow scaffolds. They create Mistspren notes, human review queues, roadmap next-action files, run reports, integrity reports, and logs; they do not edit Truthwatcher source code, accept ADRs automatically, open production pull requests, or perform destructive file operations.
+
+These scripts are not LLM agents. They do not infer brand-new ADRs from arbitrary source material on their own. Their value is to surface the current Mistspren state into reviewable files:
+
+- `truthwatcher-review.sh` captures Truthwatcher Git changes into `.mistspren/review/`.
+- `decide.sh` writes a human decision review queue into `.mistspren/review/`.
+- `roadmap.sh` writes a human next-action plan into `.mistspren/review/`.
+- `integrity.sh` writes project consistency reports into `reports/integrity/`.
+
+Timestamped workflow outputs are local review aids by default. Keep generated `truthwatcher-review-*`, `decision-review-*`, `next-actions-*`, run reports, integrity reports, logs, and `.mistspren/` state out of Git unless a specific artifact is needed for audit. Commit curated Mistspren knowledge instead: named workbench analyses, claim maps, synthesis threads, ADRs, and roadmap items.
 
 All scripts currently support the Truthwatcher project only and accept `--project truthwatcher`. Start with `--dry-run` to preview generated content before writing files.
 
@@ -285,11 +294,11 @@ Run each step manually when debugging automation, reviewing a single stage, or b
 ./scripts/synthesize.sh --project truthwatcher --dry-run
 ./scripts/synthesize.sh --project truthwatcher
 
-# 6. Decision scaffold: draft proposed ADR work only; never auto-accept decisions.
+# 6. Decision review: surface proposed ADRs and human accept/reject actions.
 ./scripts/decide.sh --project truthwatcher --dry-run
 ./scripts/decide.sh --project truthwatcher
 
-# 7. Roadmap scaffold: reconcile accepted ADRs into planning artifacts only.
+# 7. Roadmap review: write next actions from accepted/proposed ADR state.
 ./scripts/roadmap.sh --project truthwatcher --dry-run
 ./scripts/roadmap.sh --project truthwatcher
 
@@ -298,7 +307,7 @@ Run each step manually when debugging automation, reviewing a single stage, or b
 ./scripts/integrity.sh --project truthwatcher
 ```
 
-The scaffold scripts write timestamped logs to `logs/` and run reports to `reports/runs/`. The integrity script also writes detailed reports to `reports/integrity/`. The Truthwatcher review script writes workbench extracts to `projects/truthwatcher/1-workbench/extracts/` and updates `.mistspren/state/truthwatcher-last-reviewed` after a non-dry run.
+The scaffold scripts write timestamped logs to `logs/`, run reports to `reports/runs/`, and local human-facing review files to `.mistspren/review/`. The integrity script also writes detailed reports to `reports/integrity/`. The Truthwatcher review script updates `.mistspren/state/truthwatcher-last-reviewed` after a non-dry run. Promote generated review output into the project tree only after a human rewrites it into a stable, named memory artifact.
 
 ### Cron schedule example
 

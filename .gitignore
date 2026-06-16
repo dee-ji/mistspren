@@ -1,0 +1,8 @@
+/reports/runs/
+/reports/integrity/
+/logs/*.log
+/.mistspren/
+/.idea/
+/projects/truthwatcher/1-workbench/extracts/truthwatcher-review-*.md
+/projects/truthwatcher/1-workbench/claim-maps/decision-review-*.md
+/projects/truthwatcher/5-roadmap/tasks/next-actions-*.md
