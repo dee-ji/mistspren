@@ -18,9 +18,9 @@ The existing Mistspren artifacts repeatedly identify identity lifecycle, provisi
 
 ## Supporting Threads
 
-- [Truthwatcher Architecture Thread](../3-threads/truthwatcher-architecture-thread.md)
-- [Truthwatcher Decision Analysis 0002](../1-workbench/truthwatcher-decision-analysis-0002.md)
-- [Truthwatcher Current State Workbench](../1-workbench/truthwatcher-current-state.md)
+- [Truthwatcher Architecture Thread](../../3-threads/architecture/truthwatcher-architecture-thread.md)
+- [Truthwatcher Decision Analysis 0002](../../1-workbench/claim-maps/truthwatcher-decision-analysis-0002.md)
+- [Truthwatcher Current State Workbench](../../1-workbench/extracts/truthwatcher-current-state.md)
 
 ## Alternatives Considered
 

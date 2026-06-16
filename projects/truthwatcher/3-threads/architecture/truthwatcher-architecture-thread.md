@@ -43,8 +43,8 @@ Mistspren should remain the durable, Git-auditable knowledge and decision substr
 
 ## References
 
-- Workbench: [Truthwatcher Current State Workbench](../1-workbench/truthwatcher-current-state.md)
-- Decision: [ADR-0001: Truthwatcher Initial Architecture Direction](../4-decisions/ADR-0001-truthwatcher-initial-architecture-direction.md)
+- Workbench: [Truthwatcher Current State Workbench](../../1-workbench/extracts/truthwatcher-current-state.md)
+- Decision: [ADR-0001: Truthwatcher Initial Architecture Direction](../../4-decisions/proposed/ADR-0001-truthwatcher-initial-architecture-direction.md)
 
 ## Current Interpretation
 

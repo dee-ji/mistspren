@@ -16,7 +16,7 @@ Mistspren is the durable knowledge substrate and requires staged movement from e
 
 ## Supporting Threads
 
-- [Truthwatcher Architecture Thread](../3-threads/truthwatcher-architecture-thread.md)
+- [Truthwatcher Architecture Thread](../../3-threads/architecture/truthwatcher-architecture-thread.md)
 
 ## Decision
 

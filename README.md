@@ -43,18 +43,71 @@ The README intentionally documents durable folders and their intent instead of e
 
 ```text
 mistspren/
-├── 0-raw/                 # Captured, uninterpreted source material.
-├── 1-workbench/           # Temporary extraction, claim mapping, analysis, and candidate atoms.
-├── 2-atoms/               # Permanent sourced knowledge units grouped by topic.
-├── 3-threads/             # Synthesis across atoms, tradeoffs, risks, and interpretations.
-├── 4-decisions/           # ADRs and decision records, including accepted, rejected, and superseded decisions.
-├── 5-roadmap/             # Initiatives, milestones, tasks, backlog, and validation plans.
-├── friction/              # Open, resolved, and archived conflicts or unresolved tensions.
+├── 0-raw/                 # Global or cross-project source material only.
+├── 1-workbench/           # Global or cross-project analysis only.
+├── 2-atoms/               # Global or cross-project atoms only.
+├── 3-threads/             # Global or cross-project synthesis only.
+├── 4-decisions/           # Global or cross-project decisions only.
+├── 5-roadmap/             # Global or cross-project roadmap only.
+├── friction/              # Global or cross-project conflicts only.
 ├── projects/
 │   └── truthwatcher/
-│       └── workspace.yml  # Truthwatcher workspace config and cross-repository routing metadata.
+│       ├── 0-raw/         # Truthwatcher-specific captured source material.
+│       ├── 1-workbench/   # Truthwatcher-specific extraction and analysis.
+│       ├── 2-atoms/       # Truthwatcher-specific permanent sourced knowledge.
+│       ├── 3-threads/     # Truthwatcher-specific synthesis, grouped by topic.
+│       ├── 4-decisions/   # Truthwatcher-specific ADRs grouped by status.
+│       ├── 5-roadmap/     # Truthwatcher-specific execution planning.
+│       ├── friction/      # Truthwatcher-specific conflicts and unresolved tensions.
+│       └── workspace.yml  # Truthwatcher workspace config and routing metadata.
 └── templates/             # Reusable templates for atoms, threads, decisions, roadmap items, and friction records.
 ```
+
+
+## Project Memory Routing
+
+Mistspren supports both global memory and project-scoped memory. The numbered folders at the repository root are reserved for material that applies across multiple projects or to Mistspren itself. Work for a named project must live under that project's directory in `projects/<project>/` and then follow the same staged pipeline inside that project.
+
+For Truthwatcher, create and update artifacts under `projects/truthwatcher/`:
+
+```text
+projects/truthwatcher/
+├── 0-raw/
+├── 1-workbench/
+│   ├── extracts/          # Source extractions, current-state notes, and evidence summaries.
+│   ├── claim-maps/        # Claim/evidence analysis and decision-prep notes.
+│   ├── questions/         # Open investigation prompts and unresolved questions.
+│   └── candidate-atoms/   # Draft atoms not yet promoted to durable knowledge.
+├── 2-atoms/
+├── 3-threads/
+│   ├── architecture/      # Architecture synthesis threads.
+│   ├── implementation/    # Implementation-sequencing synthesis threads.
+│   ├── operations/
+│   ├── risks/
+│   └── strategy/
+├── 4-decisions/
+│   ├── proposed/
+│   ├── accepted/
+│   ├── rejected/
+│   └── superseded/
+├── 5-roadmap/
+│   ├── backlog/
+│   ├── initiatives/
+│   ├── milestones/
+│   └── tasks/
+└── friction/
+    ├── open/
+    ├── resolved/
+    └── archived/
+```
+
+Routing rules:
+
+1. If an artifact is about exactly one named project, put it under `projects/<project>/`, not in the root stage folders.
+2. Use the deepest meaningful subdirectory; for example, Truthwatcher architecture threads belong in `projects/truthwatcher/3-threads/architecture/`, and proposed Truthwatcher ADRs belong in `projects/truthwatcher/4-decisions/proposed/`.
+3. Use root stage folders only for cross-project knowledge, Mistspren operating guidance, reusable research, or material that intentionally has no single project owner.
+4. When promoting an artifact to a later stage, move it to the appropriate later-stage project subdirectory and update links rather than leaving durable project artifacts in a staging folder.
+5. `projects/<project>/workspace.yml` is the routing anchor agents should read before creating project memory.
 
 ## Knowledge Integrity Rules
 
