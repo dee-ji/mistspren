@@ -39,29 +39,48 @@ Do not skip stages.
 
 ## Repository Layout
 
-The README intentionally documents durable folders and their intent instead of every generated artifact. Individual notes, ADRs, threads, and roadmap files can change frequently without requiring README updates. The Truthwatcher workspace config is the exception because it is the cross-repository discovery anchor for agents.
+Mistspren separates project knowledge, reusable templates, executable workflow scaffolding, prompts, and generated run evidence. The numbered folders exist both at the repository root for global or cross-project memory and under `projects/<project>/` for project-scoped memory.
 
 ```text
 mistspren/
-├── 0-raw/                 # Global or cross-project source material only.
-├── 1-workbench/           # Global or cross-project analysis only.
-├── 2-atoms/               # Global or cross-project atoms only.
-├── 3-threads/             # Global or cross-project synthesis only.
-├── 4-decisions/           # Global or cross-project decisions only.
-├── 5-roadmap/             # Global or cross-project roadmap only.
-├── friction/              # Global or cross-project conflicts only.
-├── projects/
-│   └── truthwatcher/
-│       ├── 0-raw/         # Truthwatcher-specific captured source material.
-│       ├── 1-workbench/   # Truthwatcher-specific extraction and analysis.
-│       ├── 2-atoms/       # Truthwatcher-specific permanent sourced knowledge.
-│       ├── 3-threads/     # Truthwatcher-specific synthesis, grouped by topic.
-│       ├── 4-decisions/   # Truthwatcher-specific ADRs grouped by status.
-│       ├── 5-roadmap/     # Truthwatcher-specific execution planning.
-│       ├── friction/      # Truthwatcher-specific conflicts and unresolved tensions.
-│       └── workspace.yml  # Truthwatcher workspace config and routing metadata.
-└── templates/             # Reusable templates for atoms, threads, decisions, roadmap items, and friction records.
+├── 0-raw/                 # Global or cross-project source material.
+│   ├── articles/
+│   ├── docs/
+│   ├── ideas/
+│   ├── logs/
+│   └── meetings/
+├── 1-workbench/           # Global or cross-project extraction and analysis.
+│   ├── extracts/
+│   ├── claim-maps/
+│   ├── questions/
+│   └── candidate-atoms/
+├── 2-atoms/               # Global durable sourced knowledge, grouped by topic.
+├── 3-threads/             # Global synthesis threads, grouped by topic.
+├── 4-decisions/           # Global ADRs, grouped by status.
+├── 5-roadmap/             # Global roadmap items, grouped by planning level.
+├── friction/              # Global conflicts and unresolved tensions.
+├── docs/                  # Operator documentation such as cron guidance.
+├── logs/                  # Generated script logs.
+├── prompts/               # Prompt text paired with workflow stages.
+├── reports/
+│   ├── integrity/         # Integrity reports created by scripts/integrity.sh.
+│   └── runs/              # Per-run reports created by workflow scripts.
+├── scripts/               # Safe shell scaffolds for the staged workflow.
+├── templates/             # Reusable Markdown templates for durable artifacts.
+├── Makefile               # Convenience targets for common Mistspren workflows.
+└── projects/
+    └── truthwatcher/
+        ├── 0-raw/         # Truthwatcher-specific captured source material.
+        ├── 1-workbench/   # Truthwatcher-specific extraction and analysis.
+        ├── 2-atoms/       # Truthwatcher-specific sourced knowledge.
+        ├── 3-threads/     # Truthwatcher-specific synthesis.
+        ├── 4-decisions/   # Truthwatcher-specific ADRs by status.
+        ├── 5-roadmap/     # Truthwatcher-specific execution planning.
+        ├── friction/      # Truthwatcher-specific conflicts.
+        └── workspace.yml  # Truthwatcher routing metadata for agents.
 ```
+
+Generated files under `logs/` and `reports/` are evidence of workflow runs. Review them before committing, and keep only reports that are useful for audit or handoff.
 
 
 ## Project Memory Routing
@@ -216,6 +235,85 @@ When working on Truthwatcher:
 - Do not introduce Mistspren-specific commands, workflows, prompts, or agent scaffolding into Truthwatcher.
 - Store planning artifacts, analyses, critiques, and architectural investigations in Mistspren. Store code, tests, migrations, and product documentation in Truthwatcher. When uncertain, prefer storing work in Mistspren until implementation begins.
 
+
+## Scripts and Makefile Usage
+
+The `scripts/` directory contains conservative workflow scaffolds. They create Mistspren notes, run reports, integrity reports, and logs; they do not edit Truthwatcher source code, accept ADRs automatically, open production pull requests, or perform destructive file operations.
+
+All scripts currently support the Truthwatcher project only and accept `--project truthwatcher`. Start with `--dry-run` to preview generated content before writing files.
+
+### Makefile targets
+
+Use the `Makefile` for the common operator path:
+
+```bash
+# Review Truthwatcher Git changes into a Mistspren workbench extract.
+export TRUTHWATCHER_REPO_PATH=/path/to/truthwatcher
+make mistspren-review
+
+# Run the project integrity check and write reports.
+make mistspren-integrity
+
+# Preview review, synthesis, and integrity steps without keeping generated artifacts.
+TRUTHWATCHER_REPO_PATH=/path/to/truthwatcher make mistspren-dry-run
+```
+
+`mistspren-review` requires `TRUTHWATCHER_REPO_PATH` because the Truthwatcher application repository is discovered from operator configuration rather than a hard-coded filesystem path.
+
+### Manual workflow commands
+
+Run each step manually when debugging automation, reviewing a single stage, or building a cron job incrementally:
+
+```bash
+# 1. Intake scaffold: document that reviewed captures are ready for raw storage.
+./scripts/intake.sh --project truthwatcher --dry-run
+./scripts/intake.sh --project truthwatcher
+
+# 2. Extraction scaffold: document raw-to-workbench extraction intent.
+./scripts/extract.sh --project truthwatcher --dry-run
+./scripts/extract.sh --project truthwatcher
+
+# 3. Truthwatcher implementation review: create a workbench extract from Git changes.
+./scripts/truthwatcher-review.sh --project truthwatcher --truthwatcher-path /path/to/truthwatcher --dry-run
+./scripts/truthwatcher-review.sh --project truthwatcher --truthwatcher-path /path/to/truthwatcher
+
+# 4. Atom promotion scaffold: record reviewed promotion intent; automatic promotion is disabled.
+./scripts/promote.sh --project truthwatcher --dry-run
+./scripts/promote.sh --project truthwatcher
+
+# 5. Synthesis scaffold: record thread update intent from reviewed atoms/workbench notes.
+./scripts/synthesize.sh --project truthwatcher --dry-run
+./scripts/synthesize.sh --project truthwatcher
+
+# 6. Decision scaffold: draft proposed ADR work only; never auto-accept decisions.
+./scripts/decide.sh --project truthwatcher --dry-run
+./scripts/decide.sh --project truthwatcher
+
+# 7. Roadmap scaffold: reconcile accepted ADRs into planning artifacts only.
+./scripts/roadmap.sh --project truthwatcher --dry-run
+./scripts/roadmap.sh --project truthwatcher
+
+# 8. Integrity check: validate required folders and ADR/roadmap consistency.
+./scripts/integrity.sh --project truthwatcher --dry-run
+./scripts/integrity.sh --project truthwatcher
+```
+
+The scaffold scripts write timestamped logs to `logs/` and run reports to `reports/runs/`. The integrity script also writes detailed reports to `reports/integrity/`. The Truthwatcher review script writes workbench extracts to `projects/truthwatcher/1-workbench/extracts/` and updates `.mistspren/state/truthwatcher-last-reviewed` after a non-dry run.
+
+### Cron schedule example
+
+Use `docs/cron.md` as the canonical cron reference. A safe starting schedule is:
+
+```cron
+0 8 * * * /path/to/mistspren/scripts/truthwatcher-review.sh --project truthwatcher --truthwatcher-path /path/to/truthwatcher
+0 9 * * * /path/to/mistspren/scripts/synthesize.sh --project truthwatcher
+0 12 * * * /path/to/mistspren/scripts/integrity.sh --project truthwatcher
+0 8 * * 1 /path/to/mistspren/scripts/decide.sh --project truthwatcher
+0 13 * * 1 /path/to/mistspren/scripts/roadmap.sh --project truthwatcher
+```
+
+Cron should prepare reviewable Mistspren artifacts only. Keep stage advancement, ADR acceptance, and implementation changes human-reviewed.
+
 ## Agentic Workflow Suggestions
 
 A practical agentic workflow should be staged and reviewable rather than fully magical.
@@ -267,34 +365,20 @@ A practical agentic workflow should be staged and reviewable rather than fully m
 
 ## Recommended Cron Cadence
 
-Use a cadence that matches how quickly evidence changes and how much human review capacity exists.
+Use `docs/cron.md` for the cron-ready schedule that maps to the scripts in this repository. The older product-level cadence remains a useful conceptual target, but runnable cron entries should call the checked-in scripts or the `Makefile` targets documented above.
 
-| Cadence | Job | Purpose |
+A practical operating rhythm is:
+
+| Cadence | Runnable step | Purpose |
 | --- | --- | --- |
-| Every 15 minutes | Intake sync | Pull new captures from Truthwatcher, inboxes, watched folders, and integrations into `0-raw/`. |
-| Hourly | Extraction pass | Convert new raw items into `1-workbench/` claim maps, questions, and candidate atoms. |
-| Twice daily | Atom promotion review | Promote high-confidence sourced claims into `2-atoms/`; create friction records for conflicts. |
-| Daily | Integrity check | Validate links, sources, stage boundaries, and traceability rules. |
-| Twice weekly | Synthesis pass | Update `3-threads/` from accumulated atoms and friction records. |
-| Weekly | Decision review | Draft or revisit `4-decisions/` from mature threads. |
-| Weekly | Roadmap reconciliation | Ensure `5-roadmap/` reflects accepted decisions and remove or flag orphaned execution items. |
-| Monthly | Friction review | Resolve, archive, or escalate stale `friction/open/` records. |
-| Quarterly | Architecture retrospective | Review decisions, superseded assumptions, roadmap outcomes, and operating cadence. |
+| Daily | `scripts/truthwatcher-review.sh` | Capture implementation-reality changes from the Truthwatcher Git repository into a Mistspren workbench extract. |
+| Daily | `scripts/synthesize.sh` | Record synthesis-pass intent for reviewed atoms and workbench notes. |
+| Daily | `scripts/integrity.sh` or `make mistspren-integrity` | Validate required folders and ADR/roadmap consistency. |
+| Weekly | `scripts/decide.sh` | Draft proposed ADR work from mature threads only. |
+| Weekly | `scripts/roadmap.sh` | Reconcile accepted decisions into planning artifacts. |
 
-Example cron sketch:
+Start new schedules with `--dry-run`, inspect the preview and generated reports, then enable non-dry mode only for artifacts that should enter Git review.
 
-```cron
-*/15 * * * * truthwatcher sync --target 0-raw/
-0 * * * * truthwatcher extract --from 0-raw/ --to 1-workbench/
-0 9,16 * * * truthwatcher promote-atoms --from 1-workbench/ --to 2-atoms/ --friction friction/open/
-30 16 * * * truthwatcher integrity-check
-0 10 * * 2,5 truthwatcher synthesize --atoms 2-atoms/ --threads 3-threads/
-0 11 * * 5 truthwatcher decision-review --threads 3-threads/ --decisions 4-decisions/
-0 13 * * 5 truthwatcher roadmap-reconcile --decisions 4-decisions/accepted/ --roadmap 5-roadmap/
-0 10 1 * * truthwatcher friction-review --friction friction/
-```
-
-Treat these commands as interface suggestions for the Truthwatcher app or its worker CLI. If the app uses a queue-based scheduler instead of cron, keep the same cadence and stage boundaries.
 
 ## Templates
 
