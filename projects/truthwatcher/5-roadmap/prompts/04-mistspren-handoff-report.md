@@ -1,5 +1,5 @@
 ---
-completion_marker: identity_review_handoff
+completion_marker: identity review handoff
 required_adrs: ADR-0001, ADR-0002
 action: Implement only a minimal Mistspren-aligned identity-review handoff report.
 summary: Truthwatcher now has persisted identity candidates, review/audit, and deterministic auto-acceptance. The next implementation slice is a read-only Mistspren-aligned handoff report.
