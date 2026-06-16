@@ -40,7 +40,13 @@ RUN_REPORT="$REPO_ROOT/reports/runs/truthwatcher-review-$STAMP.md"
 NOTE_FILE="$REPO_ROOT/.mistspren/review/truthwatcher-review-$STAMP.md"
 STATE_FILE="$REPO_ROOT/.mistspren/state/truthwatcher-last-reviewed"
 
-log() { printf '%s %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$*" | tee -a "$LOG_FILE"; }
+log() {
+  if [ "$DRY_RUN" -eq 1 ]; then
+    printf '%s %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$*"
+  else
+    printf '%s %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$*" | tee -a "$LOG_FILE"
+  fi
+}
 
 git -C "$TRUTHWATCHER_PATH" fetch --quiet --all --prune >/dev/null 2>&1 || log "Warning: git fetch failed or no remote was reachable; continuing with local metadata."
 HEAD_COMMIT=$(git -C "$TRUTHWATCHER_PATH" rev-parse HEAD)
@@ -55,6 +61,9 @@ fi
 CHANGED_FILES=$(git -C "$TRUTHWATCHER_PATH" diff --name-status "$BASE_COMMIT" "$HEAD_COMMIT" || true)
 DIFF_STAT=$(git -C "$TRUTHWATCHER_PATH" diff --stat "$BASE_COMMIT" "$HEAD_COMMIT" || true)
 SHORT_LOG=$(git -C "$TRUTHWATCHER_PATH" log --oneline --decorate --no-merges "$BASE_COMMIT..$HEAD_COMMIT" || true)
+WORKTREE_STATUS=$(git -C "$TRUTHWATCHER_PATH" status --short || true)
+WORKTREE_DIFF=$(git -C "$TRUTHWATCHER_PATH" diff --stat || true)
+UNTRACKED_FILES=$(git -C "$TRUTHWATCHER_PATH" ls-files --others --exclude-standard || true)
 REMOTE_URL=$(git -C "$TRUTHWATCHER_PATH" remote get-url origin 2>/dev/null || printf 'unknown')
 
 render_note() {
@@ -74,13 +83,13 @@ render_note() {
 
 No Truthwatcher code was modified by this Mistspren review script. This report is local review output only. It does not accept ADRs, create implementation changes, or open production pull requests. Promote only durable conclusions into named Mistspren memory files.
 
-## Changed Files
+## Committed Changes Since Last Review
 
 \`\`\`text
 ${CHANGED_FILES:-No changed files since the last reviewed commit.}
 \`\`\`
 
-## Git Diff Summary / Stat
+## Committed Diff Summary / Stat
 
 \`\`\`text
 ${DIFF_STAT:-No diff stat since the last reviewed commit.}
@@ -90,6 +99,24 @@ ${DIFF_STAT:-No diff stat since the last reviewed commit.}
 
 \`\`\`text
 ${SHORT_LOG:-No new commits since the last reviewed commit.}
+\`\`\`
+
+## Working Tree Status
+
+\`\`\`text
+${WORKTREE_STATUS:-Truthwatcher working tree is clean.}
+\`\`\`
+
+## Uncommitted Diff Summary / Stat
+
+\`\`\`text
+${WORKTREE_DIFF:-No tracked working tree diff.}
+\`\`\`
+
+## Untracked Files
+
+\`\`\`text
+${UNTRACKED_FILES:-No untracked files.}
 \`\`\`
 
 ## Initial Review Notes

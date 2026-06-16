@@ -263,11 +263,26 @@ make mistspren-review
 # Run the project integrity check and write reports.
 make mistspren-integrity
 
-# Preview review, synthesis, and integrity steps without keeping generated artifacts.
+# Preview review, synthesis, decision, roadmap, and integrity steps without keeping generated artifacts.
+# Replace /path/to/truthwatcher with the actual Truthwatcher repository path.
 TRUTHWATCHER_HOME=/path/to/truthwatcher make mistspren-dry-run
+
+# Run review, synthesis, decision, roadmap, and integrity for real.
+TRUTHWATCHER_HOME=/path/to/truthwatcher make mistspren-run
 ```
 
-`mistspren-review` requires `TRUTHWATCHER_HOME` because the Truthwatcher application repository is discovered from operator configuration rather than a hard-coded filesystem path.
+`mistspren-review`, `mistspren-dry-run`, and `mistspren-run` require `TRUTHWATCHER_HOME` because the Truthwatcher application repository is discovered from operator configuration rather than a hard-coded filesystem path. `mistspren-run` writes local review, decision, and roadmap output under `.mistspren/review/`, run reports under `reports/runs/`, logs under `logs/`, and integrity reports under `reports/integrity/`; these generated files are ignored by default.
+
+After `mistspren-run`, read `.mistspren/review/latest-next-actions.md` first. It is the operator-facing answer for what to do next. Use `.mistspren/review/latest-decision-review.md` when you need the proposed ADR list and supporting evidence paths.
+
+ADR status changes are handled by the Makefile targets below. They update the ADR `Status` field and move the file to the matching status folder:
+
+```bash
+make adr-accept ADR=ADR-0002
+make adr-reject ADR=ADR-0002
+make adr-supersede ADR=ADR-0002
+make adr-propose ADR=ADR-0002
+```
 
 ### Manual workflow commands
 

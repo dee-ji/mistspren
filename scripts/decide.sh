@@ -29,6 +29,7 @@ STAMP=$(date -u +%Y%m%d-%H%M%S)
 LOG_FILE="$REPO_ROOT/logs/$NAME-$STAMP.log"
 RUN_REPORT="$REPO_ROOT/reports/runs/$NAME-$STAMP.md"
 REVIEW_FILE="$OUT_DIR/decision-review-$STAMP.md"
+LATEST_REVIEW_FILE="$OUT_DIR/latest-decision-review.md"
 log() { printf '%s %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$*" | tee -a "$LOG_FILE"; }
 
 list_md() {
@@ -103,10 +104,11 @@ RUN_CONTENT="# Run Report - $NAME $STAMP
 "
 
 if [ "$DRY_RUN" -eq 1 ]; then
-  printf '%s\n' "DRY RUN: would write $REVIEW_FILE, $RUN_REPORT, and $LOG_FILE"
+  printf '%s\n' "DRY RUN: would write $REVIEW_FILE, update $LATEST_REVIEW_FILE, write $RUN_REPORT, and write $LOG_FILE"
   printf '%s\n' "$CONTENT"
 else
   log "Writing decision review queue to $REVIEW_FILE"
   printf '%s\n' "$CONTENT" > "$REVIEW_FILE"
+  printf '%s\n' "$CONTENT" > "$LATEST_REVIEW_FILE"
   printf '%s\n' "$RUN_CONTENT" > "$RUN_REPORT"
 fi
