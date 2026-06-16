@@ -20,16 +20,16 @@ The resulting implementation strategy should not begin with broad feature work. 
 
 ## Traceability
 
-- Roadmap workbench: [Truthwatcher Roadmap](../1-workbench/truthwatcher-roadmap.md)
-- Architecture thread: [Truthwatcher Architecture Direction](truthwatcher-architecture-thread.md)
-- Current-state workbench: [Truthwatcher Current State Workbench](../1-workbench/truthwatcher-current-state.md)
-- Decision analysis: [Truthwatcher Decision Analysis 0002](../1-workbench/truthwatcher-decision-analysis-0002.md)
-- ADR-0001: [Truthwatcher Initial Architecture Direction](../4-decisions/ADR-0001-truthwatcher-initial-architecture-direction.md)
-- ADR-0002: [Reviewed Asset Identity Authority](../4-decisions/ADR-0002-reviewed-asset-identity.md)
+- Roadmap initiative: [Truthwatcher Identity Roadmap](../../5-roadmap/initiatives/truthwatcher-identity-roadmap.md)
+- Architecture thread: [Truthwatcher Architecture Direction](../architecture/truthwatcher-architecture-thread.md)
+- Current-state workbench: [Truthwatcher Current State Workbench](../../1-workbench/extracts/truthwatcher-current-state.md)
+- Decision analysis: [Truthwatcher Decision Analysis 0002](../../1-workbench/claim-maps/truthwatcher-decision-analysis-0002.md)
+- ADR-0001: [Truthwatcher Initial Architecture Direction](../../4-decisions/proposed/ADR-0001-truthwatcher-initial-architecture-direction.md)
+- ADR-0002: [Reviewed Asset Identity Authority](../../4-decisions/proposed/ADR-0002-reviewed-asset-identity.md)
 
 ## Conflicts and Tensions
 
-No direct conflict exists between ADR-0001 and ADR-0002. ADR-0002 refines ADR-0001 by making reviewed asset identity the first implementation boundary. The main tension is procedural: Mistspren's README describes formal roadmap material as belonging under `5-roadmap/`, while the current task explicitly asks for a roadmap file under `1-workbench/`. The roadmap should therefore be treated as a workbench roadmap draft until a later roadmap agent or reviewer promotes formal execution items into `5-roadmap/`.
+No direct conflict exists between ADR-0001 and ADR-0002. ADR-0002 refines ADR-0001 by making reviewed asset identity the first implementation boundary. The prior procedural tension has been resolved by moving the roadmap into the Truthwatcher project roadmap area under `projects/truthwatcher/5-roadmap/initiatives/`.
 
 ## Implementation Guardrails
 

@@ -2,9 +2,9 @@
 
 ## Source Scope
 
-- Primary workbench: [Truthwatcher Current State Workbench](truthwatcher-current-state.md)
-- Synthesis thread: [Truthwatcher Architecture Thread](../3-threads/truthwatcher-architecture-thread.md)
-- Prior decision: [ADR-0001: Truthwatcher Initial Architecture Direction](../4-decisions/ADR-0001-truthwatcher-initial-architecture-direction.md)
+- Primary workbench: [Truthwatcher Current State Workbench](../extracts/truthwatcher-current-state.md)
+- Synthesis thread: [Truthwatcher Architecture Thread](../../3-threads/architecture/truthwatcher-architecture-thread.md)
+- Prior decision: [ADR-0001: Truthwatcher Initial Architecture Direction](../../4-decisions/proposed/ADR-0001-truthwatcher-initial-architecture-direction.md)
 - Analysis date: 2026-06-16
 - Truthwatcher repository status: external and read-only for this Mistspren loop; no Truthwatcher code was modified.
 

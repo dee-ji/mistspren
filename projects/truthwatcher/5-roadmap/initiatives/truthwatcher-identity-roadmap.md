@@ -6,7 +6,7 @@ ADR-0001 establishes Truthwatcher as an evidence-kernel-first, local-first, sing
 
 ADR-0002 narrows the next implementation boundary to canonical asset identity. Parser-derived observations must not silently merge canonical assets or overwrite stronger canonical identity attributes. Instead, parser outputs should produce evidence-backed identity candidates, provisional records, confidence signals, proposed matches, and reviewable resolution decisions when ambiguity, conflicts, merges, or material identity changes are involved. Deterministic auto-acceptance is allowed only for explicitly low-risk, evidence-backed, non-destructive cases that do not collapse existing canonical assets, discard stronger identifiers, or hide conflicting evidence.
 
-No direct ADR conflict is visible in the current Mistspren records. ADR-0002 is a refinement of ADR-0001: it converts the broad evidence-before-truth and human-review direction into an implementation boundary for asset identity. A tension remains between the README pipeline, which says roadmap artifacts belong in `5-roadmap/`, and this task's explicit request to create this roadmap in `1-workbench/`; this file should therefore be treated as workbench planning material until promoted into formal roadmap items.
+No direct ADR conflict is visible in the current Mistspren records. ADR-0002 is a refinement of ADR-0001: it converts the broad evidence-before-truth and human-review direction into an implementation boundary for asset identity. This roadmap now lives in the Truthwatcher project roadmap area, `projects/truthwatcher/5-roadmap/initiatives/`, so it can be treated as a project-scoped initiative rather than a root-level or workbench artifact.
 
 ## Implementation Phases
 
