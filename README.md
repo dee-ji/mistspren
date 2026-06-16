@@ -256,18 +256,18 @@ All scripts currently support the Truthwatcher project only and accept `--projec
 Use the `Makefile` for the common operator path:
 
 ```bash
-# Review Truthwatcher Git changes into a Mistspren workbench extract.
-export TRUTHWATCHER_REPO_PATH=/path/to/truthwatcher
+# Review Truthwatcher Git changes into local Mistspren review output.
+export TRUTHWATCHER_HOME=/path/to/truthwatcher
 make mistspren-review
 
 # Run the project integrity check and write reports.
 make mistspren-integrity
 
 # Preview review, synthesis, and integrity steps without keeping generated artifacts.
-TRUTHWATCHER_REPO_PATH=/path/to/truthwatcher make mistspren-dry-run
+TRUTHWATCHER_HOME=/path/to/truthwatcher make mistspren-dry-run
 ```
 
-`mistspren-review` requires `TRUTHWATCHER_REPO_PATH` because the Truthwatcher application repository is discovered from operator configuration rather than a hard-coded filesystem path.
+`mistspren-review` requires `TRUTHWATCHER_HOME` because the Truthwatcher application repository is discovered from operator configuration rather than a hard-coded filesystem path.
 
 ### Manual workflow commands
 
@@ -282,9 +282,10 @@ Run each step manually when debugging automation, reviewing a single stage, or b
 ./scripts/extract.sh --project truthwatcher --dry-run
 ./scripts/extract.sh --project truthwatcher
 
-# 3. Truthwatcher implementation review: create a workbench extract from Git changes.
-./scripts/truthwatcher-review.sh --project truthwatcher --truthwatcher-path /path/to/truthwatcher --dry-run
-./scripts/truthwatcher-review.sh --project truthwatcher --truthwatcher-path /path/to/truthwatcher
+# 3. Truthwatcher implementation review: create local review output from Git changes.
+export TRUTHWATCHER_HOME=/path/to/truthwatcher
+./scripts/truthwatcher-review.sh --project truthwatcher --dry-run
+./scripts/truthwatcher-review.sh --project truthwatcher
 
 # 4. Atom promotion scaffold: record reviewed promotion intent; automatic promotion is disabled.
 ./scripts/promote.sh --project truthwatcher --dry-run
@@ -314,7 +315,8 @@ The scaffold scripts write timestamped logs to `logs/`, run reports to `reports/
 Use `docs/cron.md` as the canonical cron reference. A safe starting schedule is:
 
 ```cron
-0 8 * * * /path/to/mistspren/scripts/truthwatcher-review.sh --project truthwatcher --truthwatcher-path /path/to/truthwatcher
+TRUTHWATCHER_HOME=/path/to/truthwatcher
+0 8 * * * /path/to/mistspren/scripts/truthwatcher-review.sh --project truthwatcher
 0 9 * * * /path/to/mistspren/scripts/synthesize.sh --project truthwatcher
 0 12 * * * /path/to/mistspren/scripts/integrity.sh --project truthwatcher
 0 8 * * 1 /path/to/mistspren/scripts/decide.sh --project truthwatcher

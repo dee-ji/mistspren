@@ -5,13 +5,14 @@ SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 REPO_ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd)
 PROJECT="truthwatcher"
 DRY_RUN=0
-TRUTHWATCHER_PATH="${TRUTHWATCHER_REPO_PATH:-}"
+TRUTHWATCHER_PATH="${TRUTHWATCHER_HOME:-}"
 
 usage() {
   cat <<USAGE
-Usage: $0 --project truthwatcher --truthwatcher-path /path/to/truthwatcher [--dry-run]
+Usage: $0 --project truthwatcher [--truthwatcher-path /path/to/truthwatcher] [--dry-run]
 
-Creates a Mistspren workbench extraction note reviewing Truthwatcher Git changes.
+Creates a local Mistspren review note for Truthwatcher Git changes.
+By default, the Truthwatcher repository path is read from TRUTHWATCHER_HOME.
 This script never modifies Truthwatcher code, never accepts ADRs, and never creates production PRs.
 USAGE
 }
@@ -29,7 +30,7 @@ done
 [ "$PROJECT" = "truthwatcher" ] || { echo "Only --project truthwatcher is supported by this scaffold." >&2; exit 2; }
 WORKSPACE="$REPO_ROOT/projects/truthwatcher/workspace.yml"
 [ -f "$WORKSPACE" ] || { echo "Missing workspace routing file: $WORKSPACE" >&2; exit 1; }
-[ -n "$TRUTHWATCHER_PATH" ] || { echo "Provide --truthwatcher-path or set TRUTHWATCHER_REPO_PATH." >&2; exit 2; }
+[ -n "$TRUTHWATCHER_PATH" ] || { echo "Set TRUTHWATCHER_HOME=/path/to/truthwatcher or provide --truthwatcher-path." >&2; exit 2; }
 [ -d "$TRUTHWATCHER_PATH/.git" ] || git -C "$TRUTHWATCHER_PATH" rev-parse --git-dir >/dev/null 2>&1 || { echo "Not a Git repository: $TRUTHWATCHER_PATH" >&2; exit 1; }
 
 mkdir -p "$REPO_ROOT/logs" "$REPO_ROOT/reports/runs" "$REPO_ROOT/.mistspren/state" "$REPO_ROOT/.mistspren/review"

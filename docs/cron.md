@@ -17,7 +17,8 @@ The provided scripts intentionally do **not** auto-accept ADRs, create productio
 ## Example Cron Schedule
 
 ```cron
-0 8 * * * /path/to/mistspren/scripts/truthwatcher-review.sh --project truthwatcher --truthwatcher-path /path/to/truthwatcher
+TRUTHWATCHER_HOME=/path/to/truthwatcher
+0 8 * * * /path/to/mistspren/scripts/truthwatcher-review.sh --project truthwatcher
 0 9 * * * /path/to/mistspren/scripts/synthesize.sh --project truthwatcher
 0 12 * * * /path/to/mistspren/scripts/integrity.sh --project truthwatcher
 0 8 * * 1 /path/to/mistspren/scripts/decide.sh --project truthwatcher
