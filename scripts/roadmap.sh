@@ -46,9 +46,13 @@ if printf '%s\n' "$ACCEPTED" | grep -q 'ADR-0002-'; then
   ADR_0002_ACCEPTED=1
 fi
 IDENTITY_CANDIDATES_IMPLEMENTED=0
+IDENTITY_REVIEW_IMPLEMENTED=0
 LATEST_TRUTHWATCHER_REVIEW=$(find "$REPO_ROOT/.mistspren/review" -maxdepth 1 -type f -name 'truthwatcher-review-*.md' 2>/dev/null | sort | tail -n 1 || true)
 if [ -n "$LATEST_TRUTHWATCHER_REVIEW" ] && grep -q 'identity_candidates' "$LATEST_TRUTHWATCHER_REVIEW"; then
   IDENTITY_CANDIDATES_IMPLEMENTED=1
+fi
+if [ -n "$LATEST_TRUTHWATCHER_REVIEW" ] && grep -q 'identity_candidate_reviews' "$LATEST_TRUTHWATCHER_REVIEW"; then
+  IDENTITY_REVIEW_IMPLEMENTED=1
 fi
 
 NEXT_PROMPT="No implementation prompt was found in projects/truthwatcher/5-roadmap/initiatives/truthwatcher-identity-roadmap.md."
@@ -159,6 +163,56 @@ After implementation, summarize:
 - Remaining follow-up work for deterministic auto-acceptance.
 ```'
 
+AUTO_ACCEPTANCE_PROMPT='```text
+You are operating inside the Truthwatcher repository.
+
+README.md, CONTRIBUTING.md, steering-docs/*, docs/planning/identity-lifecycle-analysis.md, and the existing identity_candidates / identity_candidate_reviews implementation are authoritative. ADR-0001 and ADR-0002 are accepted in Mistspren.
+
+Mission: implement the next ADR-0002 slice: narrow deterministic auto-acceptance for low-risk identity candidates.
+
+Implement only the smallest testable slice:
+- Add explicit auto-acceptance rules for evidence-backed, non-destructive identity candidates.
+- Auto-accept only candidates that are strong, have no plausible conflict, and do not collapse or rewrite existing canonical assets.
+- Preserve pending review for hostname/name/weak/provisional/ambiguous/conflicting candidates.
+- Record an auditable auto-acceptance decision using the existing review/audit path.
+- Expose operator-visible explanation for why a candidate was auto-accepted or queued.
+- Do not merge canonical assets.
+- Do not rewrite assets.identity_key.
+- Do not discard stronger identifiers or hide conflicting evidence.
+- Do not expose non-fake collectors or any new execution path.
+
+Read before editing:
+1. docs/planning/identity-lifecycle-analysis.md
+2. internal/parser/identity_candidates.go
+3. internal/db/identity_candidates.go
+4. internal/api/identity_candidates.go
+5. migrations/000010_identity_candidates.*
+6. migrations/000011_identity_candidate_reviews.*
+7. tests covering candidate persistence and review actions
+
+Acceptance criteria:
+- Strong vendor+serial or system-MAC candidates with no plausible conflict can be auto-accepted.
+- Hostname/name/provisional candidates remain queued for review.
+- Any candidate that conflicts with an existing canonical asset or stronger identifier remains queued.
+- Auto-acceptance creates auditable review metadata.
+- Tests cover auto-accepted strong candidate, queued provisional candidate, queued conflict case, explanation text/state, and non-destructive behavior.
+
+Non-goals:
+- No canonical asset merge.
+- No canonical identity rewrite.
+- No bulk deduplication sweep.
+- No machine-learning identity scoring.
+- No source-of-truth export or sync.
+- No new non-fake collector exposure.
+
+After implementation, summarize:
+- Files changed.
+- Rule definitions.
+- Tests added.
+- How conflicts prevent auto-acceptance.
+- Remaining follow-up work for Mistspren handoff/export.
+```'
+
 if [ -n "$PROPOSED" ]; then
   ACTIONS="1. Do not start Truthwatcher implementation from this roadmap yet.
 2. Review the proposed ADRs listed in this file.
@@ -166,7 +220,14 @@ if [ -n "$PROPOSED" ]; then
 4. The current likely next human action is to review ADR-0002 and decide whether the identity lifecycle boundary should be accepted."
 elif [ -n "$ACCEPTED" ]; then
   if [ "$ADR_0002_ACCEPTED" -eq 1 ]; then
-    if [ "$IDENTITY_CANDIDATES_IMPLEMENTED" -eq 1 ]; then
+    if [ "$IDENTITY_REVIEW_IMPLEMENTED" -eq 1 ]; then
+      ACTIONS="1. Run the implementation prompt in this file inside the Truthwatcher repository.
+2. Implement only narrow deterministic auto-acceptance for low-risk identity candidates.
+3. Keep code, tests, migrations, and product docs in Truthwatcher.
+4. Bring resulting implementation observations back into Mistspren with make mistspren-run."
+      THREAD_SUMMARY="ADR-0001 and ADR-0002 are accepted, and Truthwatcher now has persisted identity candidates plus a minimal review/audit path. The next implementation slice is narrow deterministic auto-acceptance for low-risk candidates, while preserving queued review for ambiguous or conflicting identity evidence."
+      NEXT_PROMPT="$AUTO_ACCEPTANCE_PROMPT"
+    elif [ "$IDENTITY_CANDIDATES_IMPLEMENTED" -eq 1 ]; then
       ACTIONS="1. Run the implementation prompt in this file inside the Truthwatcher repository.
 2. Implement only the minimal identity candidate review queue and resolution audit.
 3. Keep code, tests, migrations, and product docs in Truthwatcher.
