@@ -80,7 +80,7 @@ mistspren/
         └── workspace.yml  # Truthwatcher routing metadata for agents.
 ```
 
-Generated files under `logs/` and `reports/` are evidence of workflow runs. Review them before committing, and keep only reports that are useful for audit or handoff.
+Generated files under `logs/`, `reports/`, and `.mistspren/` are local evidence of workflow runs. They are ignored by default. Commit curated project memory instead of timestamped run output.
 
 
 ## Project Memory Routing
@@ -244,10 +244,10 @@ These scripts are not LLM agents. They do not infer brand-new ADRs from arbitrar
 
 - `truthwatcher-review.sh` captures Truthwatcher Git changes into `.mistspren/review/`.
 - `decide.sh` writes a human decision review queue into `.mistspren/review/`.
-- `roadmap.sh` writes a human next-action plan into `.mistspren/review/`.
+- `roadmap.sh` selects the next roadmap prompt from `projects/truthwatcher/5-roadmap/prompts/` and writes a human next-action plan into `.mistspren/review/`.
 - `integrity.sh` writes project consistency reports into `reports/integrity/`.
 
-Timestamped workflow outputs are local review aids by default. Keep generated `truthwatcher-review-*`, `decision-review-*`, `next-actions-*`, run reports, integrity reports, logs, and `.mistspren/` state out of Git unless a specific artifact is needed for audit. Commit curated Mistspren knowledge instead: named workbench analyses, claim maps, synthesis threads, ADRs, and roadmap items.
+Timestamped workflow outputs are local review aids by default. Keep generated `truthwatcher-review-*`, `decision-review-*`, `next-actions-*`, run reports, integrity reports, logs, and `.mistspren/` state out of Git unless a specific artifact is needed for audit. Commit curated Mistspren knowledge instead: named workbench analyses, claim maps, synthesis threads, ADRs, roadmap items, and data-driven roadmap prompt files.
 
 All scripts currently support the Truthwatcher project only and accept `--project truthwatcher`. Start with `--dry-run` to preview generated content before writing files.
 
@@ -274,6 +274,8 @@ TRUTHWATCHER_HOME=/path/to/truthwatcher make mistspren-run
 `mistspren-review`, `mistspren-dry-run`, and `mistspren-run` require `TRUTHWATCHER_HOME` because the Truthwatcher application repository is discovered from operator configuration rather than a hard-coded filesystem path. `mistspren-run` writes local review, decision, and roadmap output under `.mistspren/review/`, run reports under `reports/runs/`, logs under `logs/`, and integrity reports under `reports/integrity/`; these generated files are ignored by default.
 
 After `mistspren-run`, read `.mistspren/review/latest-next-actions.md` first. It is the operator-facing answer for what to do next. Use `.mistspren/review/latest-decision-review.md` when you need the proposed ADR list and supporting evidence paths.
+
+Roadmap prompts are data files, not hardcoded script logic. Add or edit prompt files under `projects/truthwatcher/5-roadmap/prompts/`; `scripts/roadmap.sh` selects the first prompt whose `completion_marker` has not appeared in Truthwatcher review history and checks that its `required_adrs` are accepted.
 
 ADR status changes are handled by the Makefile targets below. They update the ADR `Status` field and move the file to the matching status folder:
 
@@ -314,7 +316,7 @@ export TRUTHWATCHER_HOME=/path/to/truthwatcher
 ./scripts/decide.sh --project truthwatcher --dry-run
 ./scripts/decide.sh --project truthwatcher
 
-# 7. Roadmap review: write next actions from accepted/proposed ADR state.
+# 7. Roadmap review: select the next configured roadmap prompt and write next actions.
 ./scripts/roadmap.sh --project truthwatcher --dry-run
 ./scripts/roadmap.sh --project truthwatcher
 
@@ -397,13 +399,13 @@ A practical operating rhythm is:
 
 | Cadence | Runnable step | Purpose |
 | --- | --- | --- |
-| Daily | `scripts/truthwatcher-review.sh` | Capture implementation-reality changes from the Truthwatcher Git repository into a Mistspren workbench extract. |
+| Daily | `scripts/truthwatcher-review.sh` | Capture implementation-reality changes from the Truthwatcher Git repository into local Mistspren review output. |
 | Daily | `scripts/synthesize.sh` | Record synthesis-pass intent for reviewed atoms and workbench notes. |
 | Daily | `scripts/integrity.sh` or `make mistspren-integrity` | Validate required folders and ADR/roadmap consistency. |
 | Weekly | `scripts/decide.sh` | Draft proposed ADR work from mature threads only. |
-| Weekly | `scripts/roadmap.sh` | Reconcile accepted decisions into planning artifacts. |
+| Weekly | `scripts/roadmap.sh` | Select the next configured roadmap prompt and write local next-action output. |
 
-Start new schedules with `--dry-run`, inspect the preview and generated reports, then enable non-dry mode only for artifacts that should enter Git review.
+Start new schedules with `--dry-run`, inspect the preview and generated local review output, then enable non-dry mode for the workflow state you want to record locally. Promote only curated conclusions into tracked project files.
 
 
 ## Templates
