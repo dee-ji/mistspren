@@ -39,47 +39,21 @@ Do not skip stages.
 
 ## Repository Layout
 
+The README intentionally documents durable folders and their intent instead of every generated artifact. Individual notes, ADRs, threads, and roadmap files can change frequently without requiring README updates. The Truthwatcher workspace config is the exception because it is the cross-repository discovery anchor for agents.
+
 ```text
 mistspren/
-├── 0-raw/
-│   ├── articles/
-│   ├── docs/
-│   ├── meetings/
-│   ├── logs/
-│   └── ideas/
-├── 1-workbench/
-│   ├── extracts/
-│   ├── claim-maps/
-│   ├── questions/
-│   └── candidate-atoms/
-├── 2-atoms/
-│   ├── networking/
-│   ├── automation/
-│   ├── inventory/
-│   ├── source-of-truth/
-│   ├── ai-agents/
-│   ├── discovery/
-│   └── architecture/
-├── 3-threads/
-│   ├── architecture/
-│   ├── implementation/
-│   ├── operations/
-│   ├── risks/
-│   └── strategy/
-├── 4-decisions/
-│   ├── accepted/
-│   ├── superseded/
-│   └── rejected/
-├── 5-roadmap/
-│   ├── initiatives/
-│   ├── milestones/
-│   ├── tasks/
-│   └── backlog/
-├── friction/
-│   ├── open/
-│   ├── resolved/
-│   └── archived/
-└── templates/
+├── 0-raw/                 # Captured, uninterpreted source material.
+├── 1-workbench/           # Temporary extraction, claim mapping, analysis, and candidate atoms.
+├── 2-atoms/               # Permanent sourced knowledge units grouped by topic.
+├── 3-threads/             # Synthesis across atoms, tradeoffs, risks, and interpretations.
+├── 4-decisions/           # ADRs and decision records, including accepted, rejected, and superseded decisions.
+├── 5-roadmap/             # Initiatives, milestones, tasks, backlog, and validation plans.
+├── friction/              # Open, resolved, and archived conflicts or unresolved tensions.
+├── projects/
+│   └── truthwatcher/
+│       └── workspace.yml  # Truthwatcher workspace config and cross-repository routing metadata.
+└── templates/             # Reusable templates for atoms, threads, decisions, roadmap items, and friction records.
 ```
 
 ## Knowledge Integrity Rules
@@ -151,15 +125,43 @@ Use `templates/friction.md` when creating a new friction record.
 
 ## Connection to the Truthwatcher App
 
-Mistspren is the knowledge substrate for the Truthwatcher app. The Truthwatcher app can act as the interface and automation layer, while this repository remains the durable, auditable intelligence store.
+Mistspren is the architectural workbench and agentic decision system for Truthwatcher. Truthwatcher is the product being designed, implemented, and evolved.
+
+Repository roles:
+
+- **Mistspren owns:** architectural reasoning, ADRs, implementation analysis, agentic loops, planning artifacts, research, tradeoff analysis, and decision history.
+- **Mistspren produces:** ADRs, implementation recommendations, design reviews, architectural critiques, project plans, and other durable planning artifacts.
+- **Truthwatcher owns:** source code, tests, migrations, APIs, product documentation, releases, and deployment artifacts.
+- **Truthwatcher consumes:** accepted architectural decisions, implementation guidance, and project plans.
+
+Authority model:
+
+- **Mistspren is authoritative for architectural intent.**
+- **Truthwatcher is authoritative for implementation reality.**
+- If code behavior conflicts with an ADR, record the conflict, analyze the reason, and update the ADR or implementation plan as appropriate. Do not silently assume either the ADR or the code is correct.
 
 Recommended responsibility split:
 
-- **Mistspren repository:** Markdown artifacts, source traceability, decisions, roadmap history, and Git-based change review.
-- **Truthwatcher app:** Capture UI, review queues, agent orchestration, search, graph navigation, scheduled jobs, notifications, and dashboards.
-- **Shared contract:** Truthwatcher should write into the Mistspren pipeline without bypassing stage rules. For example, a captured article enters `0-raw/`, an extraction job creates `1-workbench/` notes, a reviewer or agent promotes sourced claims into `2-atoms/`, and only synthesized threads can support decisions and roadmap changes.
+- **Mistspren repository:** Markdown artifacts, source traceability, decisions, roadmap history, architectural critique, implementation analysis, and Git-based change review.
+- **Truthwatcher app/repository:** Product code, tests, migrations, APIs, releases, deployment artifacts, capture UI, review queues, search, graph navigation, scheduled jobs, notifications, and dashboards.
+- **Shared contract:** Truthwatcher should use accepted Mistspren decisions and plans without bypassing stage rules. For example, a captured article enters `0-raw/`, an extraction job creates `1-workbench/` notes, a reviewer or agent promotes sourced claims into `2-atoms/`, and only synthesized threads can support decisions and roadmap changes.
 
 This separation keeps Truthwatcher operationally useful without making it the only place where institutional knowledge lives. Git remains the audit trail; Truthwatcher becomes the workflow engine.
+
+### Truthwatcher Workspace Configuration
+
+Truthwatcher-specific workspace metadata lives at `projects/truthwatcher/workspace.yml`. That file declares the Truthwatcher project, points agents to the Truthwatcher repository metadata, identifies Mistspren as the ADR source, and records that analysis deliverables belong in Mistspren while implementation deliverables belong in Truthwatcher.
+
+Agents working across Mistspren and Truthwatcher should use `projects/truthwatcher/workspace.yml`, repository metadata, Git remotes, mounted workspaces, or explicit user instructions to discover the Truthwatcher repository. Do not assume a fixed filesystem path.
+
+When working on Truthwatcher:
+
+- Read relevant ADRs from Mistspren before proposing implementation.
+- Treat ADRs as design intent, not executable truth.
+- Verify assumptions against the actual Truthwatcher code.
+- Preserve separation between Mistspren workflow artifacts and Truthwatcher product artifacts.
+- Do not introduce Mistspren-specific commands, workflows, prompts, or agent scaffolding into Truthwatcher.
+- Store planning artifacts, analyses, critiques, and architectural investigations in Mistspren. Store code, tests, migrations, and product documentation in Truthwatcher. When uncertain, prefer storing work in Mistspren until implementation begins.
 
 ## Agentic Workflow Suggestions
 
