@@ -1,0 +1,12 @@
+project: truthwatcher
+
+repositories:
+  truthwatcher:
+    github: dee-ji/truthwatcher
+
+adr_source:
+  repository: mistspren
+
+deliverables:
+  analysis: mistspren
+  implementation: truthwatcher
