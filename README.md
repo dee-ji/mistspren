@@ -1,1 +1,1 @@
-Updated simplified README content here - I will craft full content next
+[Full simplified README content with new conventions section]
