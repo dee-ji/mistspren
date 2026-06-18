@@ -10,6 +10,7 @@ adr_source:
 
 memory_root: projects/truthwatcher
 
+# Simplified stage paths for easier navigation
 stage_paths:
   raw: projects/truthwatcher/0-raw
   workbench: projects/truthwatcher/1-workbench
@@ -20,32 +21,8 @@ stage_paths:
   friction: projects/truthwatcher/friction
 
 routing:
-  rule: Truthwatcher-specific Mistspren artifacts must be created under projects/truthwatcher, not in the repository-root stage folders.
-  workbench:
-    extracts: projects/truthwatcher/1-workbench/extracts
-    claim_maps: projects/truthwatcher/1-workbench/claim-maps
-    questions: projects/truthwatcher/1-workbench/questions
-    candidate_atoms: projects/truthwatcher/1-workbench/candidate-atoms
-  threads:
-    architecture: projects/truthwatcher/3-threads/architecture
-    implementation: projects/truthwatcher/3-threads/implementation
-    operations: projects/truthwatcher/3-threads/operations
-    risks: projects/truthwatcher/3-threads/risks
-    strategy: projects/truthwatcher/3-threads/strategy
-  decisions:
-    proposed: projects/truthwatcher/4-decisions/proposed
-    accepted: projects/truthwatcher/4-decisions/accepted
-    rejected: projects/truthwatcher/4-decisions/rejected
-    superseded: projects/truthwatcher/4-decisions/superseded
-  roadmap:
-    backlog: projects/truthwatcher/5-roadmap/backlog
-    initiatives: projects/truthwatcher/5-roadmap/initiatives
-    milestones: projects/truthwatcher/5-roadmap/milestones
-    tasks: projects/truthwatcher/5-roadmap/tasks
-  friction:
-    open: projects/truthwatcher/friction/open
-    resolved: projects/truthwatcher/friction/resolved
-    archived: projects/truthwatcher/friction/archived
+  rule: Keep subfolders minimal. Use flat files with clear names in workbench/threads when possible. Subdirs only for clear categories (e.g., architecture vs implementation).
+  # Reduced nesting guidance
 
 deliverables:
   analysis: mistspren
